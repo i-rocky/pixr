@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pixr — resize, crop, pad, and convert images from the command line</title>
+<meta name="description" content="pixr is a cross-platform CLI image manipulation tool written in Go. Resize with fit/fill/stretch modes, convert between JPEG, PNG, GIF, WebP, AVIF and more — one tiny binary.">
+<style>
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #f78166;
+  --accent-dim: #5a2d1e;
+  --good: #3fb950;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+code, pre, .term { font-family: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace; }
+.wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+header { padding: 72px 0 40px; text-align: center; }
+.logo { font-size: 44px; font-weight: 700; letter-spacing: -1px; }
+.logo .bar { color: var(--accent); }
+.tagline { color: var(--muted); font-size: 20px; margin-top: 8px; }
+.badges { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.badge {
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 4px 14px; font-size: 13px; color: var(--muted);
+}
+.badge.hot { border-color: var(--accent-dim); color: var(--accent); }
+.cta { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-block; padding: 10px 22px; border-radius: 8px;
+  text-decoration: none; font-weight: 600; font-size: 15px;
+}
+.btn.primary { background: var(--accent); color: #04121f; }
+.btn.ghost { border: 1px solid var(--border); color: var(--text); }
+.term {
+  background: #010409; border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; font-size: 13.5px; line-height: 1.7; overflow-x: auto;
+  text-align: left; white-space: pre; color: #c9d1d9;
+}
+.term .dim { color: var(--muted); }
+.term .pct { color: var(--good); }
+.term .fill { color: var(--accent); }
+.hero-term { margin: 36px auto 0; max-width: 820px; }
+section { padding: 40px 0; border-top: 1px solid var(--border); }
+h2 { font-size: 26px; margin-bottom: 18px; letter-spacing: -0.5px; }
+h3 { font-size: 18px; margin: 22px 0 8px; }
+p { color: var(--muted); margin-bottom: 12px; }
+p strong, li strong { color: var(--text); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 20px; }
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 20px;
+}
+.card h3 { margin: 0 0 8px; font-size: 16px; }
+.card p { font-size: 14px; margin: 0; }
+pre.snippet {
+  background: #010409; border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 18px; font-size: 14px; overflow-x: auto; margin: 10px 0 18px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 14px 0; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; }
+td code { background: var(--panel); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+footer { padding: 36px 0 48px; color: var(--muted); font-size: 14px; text-align: center; }
+footer a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="logo">pix<span class="bar">r</span></div>
+  <div class="tagline">Resize, crop, pad, and convert images from the command line.</div>
+  <div class="badges">
+    <span class="badge hot">One tiny binary</span>
+    <span class="badge">Cross-platform</span>
+    <span class="badge">Go</span>
+    <span class="badge">MIT</span>
+  </div>
+  <div class="cta">
+    <a class="btn primary" href="#install">Install</a>
+    <a class="btn ghost" href="https://github.com/i-rocky/pixr">GitHub</a>
+  </div>
+  <div class="term hero-term"><span class="dim">$</span> pixr photo.jpg thumb.webp -s 512x512 -m fit
+<span class="pct">Image processed successfully: photo.jpg -&gt; thumb.webp</span></div>
+</header>
+
+<section class="wrap" id="why">
+  <h2>Why</h2>
+  <p>Resizing one image shouldn't mean opening an editor or memorizing an ImageMagick
+  incantation. pixr is a single cross-platform binary: point it at an input and an
+  output, optionally give it a size and a mode, and it does the obvious thing —
+  format conversion included, inferred from the output filename.</p>
+  <div class="grid">
+    <div class="card"><h3>Three resize modes</h3><p><code>fit</code> keeps aspect ratio inside your box, <code>fill</code> keeps aspect ratio and crops the excess, <code>stretch</code> hits the exact dimensions. Padding color is yours to pick.</p></div>
+    <div class="card"><h3>Format conversion built in</h3><p>Read and write JPEG, PNG, GIF, BMP, TIFF, WebP, AVIF, ICO, and ICNS. Even reads HEIC/HEIF and JPEG XL straight off your phone or camera.</p></div>
+    <div class="card"><h3>Zero ceremony</h3><p><code>pixr input.jpg output.png</code> just works. Sensible defaults (800×512, quality 85, fit mode) — override only what you need.</p></div>
+  </div>
+</section>
+
+<section class="wrap" id="install">
+  <h2>Install</h2>
+  <h3>Scoop (Windows)</h3>
+  <pre class="snippet">scoop bucket add rocky https://github.com/i-rocky/scoop-bucket
+scoop install pixr</pre>
+  <h3>Homebrew (macOS / Linux)</h3>
+  <pre class="snippet">brew tap i-rocky/tap &amp;&amp; brew install pixr</pre>
+  <h3>Manual</h3>
+  <p>Grab a prebuilt binary from <a href="https://github.com/i-rocky/pixr/releases">GitHub Releases</a> —
+  darwin, linux, and windows builds for x86_64 and aarch64 — and drop it on your <code>PATH</code>.</p>
+</section>
+
+<section class="wrap" id="usage">
+  <h2>Usage</h2>
+  <pre class="snippet">pixr -i input.jpg -o output.png -w 800 -H 600   # explicit flags
+pixr -i input.jpg -o output.png -s 800x600      # combined size
+pixr input.jpg output.png -w 800 -H 600         # positional input/output
+pixr input.jpg output.png                       # defaults: 800x512, fit, q85</pre>
+  <table>
+    <tr><th>Flag</th><th>What it does</th><th>Default</th></tr>
+    <tr><td><code>-i, --input</code></td><td>input image file (or first positional argument)</td><td>—</td></tr>
+    <tr><td><code>-o, --output</code></td><td>output image file (or second positional argument)</td><td>—</td></tr>
+    <tr><td><code>-w, --width</code></td><td>target width</td><td><code>800</code></td></tr>
+    <tr><td><code>-H, --height</code></td><td>target height</td><td><code>512</code></td></tr>
+    <tr><td><code>-s, --size</code></td><td>target size as <code>WIDTHxHEIGHT</code> (e.g. <code>512x512</code>)</td><td>—</td></tr>
+    <tr><td><code>-m, --mode</code></td><td>resize mode: <code>fit</code>, <code>fill</code>, or <code>stretch</code></td><td><code>fit</code></td></tr>
+    <tr><td><code>-q, --quality</code></td><td>output quality for lossy formats (1–100)</td><td><code>85</code></td></tr>
+    <tr><td><code>-f, --format</code></td><td>output format (jpg, png, gif, …)</td><td>from output filename</td></tr>
+    <tr><td><code>-p, --pad-color</code></td><td>padding color in hex (<code>#RRGGBB</code>)</td><td><code>#FFFFFF</code></td></tr>
+    <tr><td><code>-?, --help</code></td><td>show help</td><td>—</td></tr>
+    <tr><td><code>--version</code></td><td>print version</td><td>—</td></tr>
+  </table>
+  <h3>Supported formats</h3>
+  <table>
+    <tr><th>Format</th><th>Read</th><th>Write</th></tr>
+    <tr><td>JPEG (<code>.jpg</code>, <code>.jpeg</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>PNG (<code>.png</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>GIF (<code>.gif</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>BMP (<code>.bmp</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>TIFF (<code>.tiff</code>, <code>.tif</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>WebP (<code>.webp</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>AVIF (<code>.avif</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>ICO (<code>.ico</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>ICNS (<code>.icns</code>)</td><td>✅</td><td>✅</td></tr>
+    <tr><td>HEIC/HEIF (<code>.heic</code>, <code>.heif</code>)</td><td>✅</td><td>read-only</td></tr>
+    <tr><td>JPEG XL (<code>.jxl</code>)</td><td>✅</td><td>read-only</td></tr>
+  </table>
+  <p>HEIC/HEIF and JPEG XL sources can be read but must be written to a fully supported
+  output format (PNG, JPEG, WebP, …) — the underlying decoders don't encode.
+  JPEG 2000 (<code>.jp2</code>) is not supported in either direction.</p>
+</section>
+
+<footer class="wrap">
+  MIT licensed · built by <a href="https://github.com/i-rocky">i-rocky</a> ·
+  <a href="https://github.com/i-rocky/pixr">source on GitHub</a>
+</footer>
+
+</body>
+</html>
