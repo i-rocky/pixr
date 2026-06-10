@@ -66,7 +66,7 @@ jobs:
           OUTDIR="dist"
           mkdir -p "$OUTDIR"
           BIN="${{ steps.target.outputs.artifact }}${{ steps.target.outputs.binext }}"
-          go build -o "$OUTDIR/$BIN" .
+          go build -ldflags "-X github.com/i-rocky/pixr/cmd.version=${{ steps.target.outputs.version }}" -o "$OUTDIR/$BIN" .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -97,8 +97,7 @@ jobs:
           VER="${VER%.exe}"
           TMP_DIR="$(mktemp -d)"
           cp "$WIN_EXE" "$TMP_DIR/pixr.exe"
-          cp "$WIN_EXE" "$TMP_DIR/nim.exe"
-          (cd "$TMP_DIR" && zip -9 "$GITHUB_WORKSPACE/dist/pixr-windows-x86_64-v${VER}.zip" pixr.exe nim.exe)
+          (cd "$TMP_DIR" && zip -9 "$GITHUB_WORKSPACE/dist/pixr-windows-x86_64-v${VER}.zip" pixr.exe)
           rm -rf "$TMP_DIR"
 
       - name: Checksums

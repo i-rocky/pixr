@@ -9,6 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Overridden at release time via -ldflags "-X github.com/i-rocky/pixr/cmd.version=vX.Y.Z".
+var version = "dev"
+
 var (
 	inputFile    string
 	outputFile   string
@@ -22,8 +25,9 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "pixr [input] [output]",
-	Short: "Pixr is an image manipulation tool",
+	Use:     "pixr [input] [output]",
+	Short:   "Pixr is an image manipulation tool",
+	Version: version,
 	Long: `Pixr is a cross-platform CLI tool for image manipulation.
 It can resize, crop, pad, and convert images between formats.`,
 	Example: `  pixr -i input.jpg -o output.png -w 800 -H 600
@@ -183,8 +187,7 @@ func Execute() error {
 }
 
 func init() {
-	// Disable the built-in help flag
-	rootCmd.PersistentFlags().BoolP("help", "", false, "Help for pixr")
+	// Register the help flag with the "?" shorthand before cobra adds its default
 	rootCmd.Flags().BoolP("help", "?", false, "Help for pixr")
 
 	// Define flags and bind them to variables

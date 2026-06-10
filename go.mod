@@ -1,6 +1,6 @@
 module github.com/i-rocky/pixr
 
-go 1.24
+go 1.25.0
 
 require (
 	github.com/chai2010/webp v1.4.0
@@ -12,7 +12,7 @@ require (
 	github.com/sergeymakinen/go-bmp v1.0.0
 	github.com/sergeymakinen/go-ico v1.0.0-beta.0
 	github.com/spf13/cobra v1.8.0
-	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
+	golang.org/x/image v0.42.0
 )
 
 require (
