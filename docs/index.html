@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>pixr — resize, crop, pad, and convert images from the command line</title>
 <meta name="description" content="pixr is a cross-platform CLI image manipulation tool written in Go. Resize with fit/fill/stretch modes, convert between JPEG, PNG, GIF, WebP, AVIF and more — one tiny binary.">
+<script src="https://cdn.jsdelivr.net/npm/x-zsh@0.7/x-zsh.min.js"></script>
 <style>
 :root {
   --bg: #0d1117;
@@ -90,8 +91,18 @@ a { color: var(--accent); }
     <a class="btn primary" href="#install">Install</a>
     <a class="btn ghost" href="https://github.com/i-rocky/pixr">GitHub</a>
   </div>
-  <div class="term hero-term"><span class="dim">$</span> pixr photo.jpg thumb.webp -s 512x512 -m fit
-<span class="pct">Image processed successfully: photo.jpg -&gt; thumb.webp</span></div>
+  <div class="hero-term">
+  <x-zsh os="ubuntu" plugins="go" height="280" loop loop-delay="3000">
+    cmd: pixr photo.jpg thumb.webp -s 512x512 -m fit
+    progress[1.8s arrow]: converting photo.jpg → thumb.webp
+    success: wrote thumb.webp (512x512)
+    delay[800]:
+    note: pad to a square with a custom color, tuned quality
+    cmd: pixr logo.png icon.png -s 256x256 -m fit -p "#0d1117" -q 90
+    progress[1.2s arrow]: converting logo.png → icon.png
+    success: wrote icon.png (256x256)
+  </x-zsh>
+  </div>
 </header>
 
 <section class="wrap" id="why">
