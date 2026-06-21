@@ -12,6 +12,16 @@ Pixr is a cross-platform CLI tool for image manipulation written in Go. It can r
 
 ## Installation
 
+### Debian/Ubuntu (apt)
+
+```sh
+curl -fsSL https://apt.clapbox.net/rocky-oss.gpg \
+  | sudo tee /usr/share/keyrings/rocky-oss.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/rocky-oss.gpg] https://apt.clapbox.net stable main" \
+  | sudo tee /etc/apt/sources.list.d/rocky-oss.list
+sudo apt update && sudo apt install pixr
+```
+
 ### From Source
 
 1. Clone the repository:

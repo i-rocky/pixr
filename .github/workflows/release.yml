@@ -68,11 +68,46 @@ jobs:
           BIN="${{ steps.target.outputs.artifact }}${{ steps.target.outputs.binext }}"
           go build -ldflags "-X github.com/i-rocky/pixr/cmd.version=${{ steps.target.outputs.version }}" -o "$OUTDIR/$BIN" .
 
+      - name: Build deb package
+        if: matrix.goos == 'linux'
+        shell: bash
+        env:
+          DEBARCH: ${{ matrix.goarch }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.target.outputs.version }}"
+          DEBVER="${VERSION#v}"
+          BIN="${{ steps.target.outputs.artifact }}"
+          pkgroot="$(mktemp -d)"
+          mkdir -p "$pkgroot/usr/bin" "$pkgroot/DEBIAN"
+          install -m755 "dist/$BIN" "$pkgroot/usr/bin/pixr"
+          {
+            echo "Package: pixr"
+            echo "Version: ${DEBVER}"
+            echo "Section: graphics"
+            echo "Priority: optional"
+            echo "Architecture: ${DEBARCH}"
+            echo "Maintainer: Rocky <smrockypk@gmail.com>"
+            echo "Homepage: https://i-rocky.github.io/pixr/"
+            echo "Description: Cross-platform CLI image manipulation tool"
+            echo " Pixr resizes, crops, pads, and converts images between"
+            echo " formats (JPEG, PNG, GIF) from the command line."
+          } > "$pkgroot/DEBIAN/control"
+          dpkg-deb --build --root-owner-group "$pkgroot" "dist/pixr_${DEBVER}_${DEBARCH}.deb"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.target.outputs.artifact }}
           path: dist/${{ steps.target.outputs.artifact }}${{ steps.target.outputs.binext }}
+          if-no-files-found: error
+
+      - name: Upload deb artifact
+        if: matrix.goos == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pixr-deb-${{ matrix.goarch }}
+          path: dist/pixr_*_${{ matrix.goarch }}.deb
           if-no-files-found: error
 
   release:
